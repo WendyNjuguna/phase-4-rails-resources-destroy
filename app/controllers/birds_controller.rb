@@ -33,6 +33,13 @@ class BirdsController < ApplicationController
     end
   end
 
+
+  private
+
+  def bird_params
+    params.permit(:name, :species, :likes)
+  end
+
   # PATCH /birds/:id/like
   def increment_likes
     bird = Bird.find_by(id: params[:id])
@@ -44,10 +51,15 @@ class BirdsController < ApplicationController
     end
   end
 
-  private
-
-  def bird_params
-    params.permit(:name, :species, :likes)
+  def destroy
+    bird = Bird.find_by(id: params[:id])
+    if bird
+      bird.destroy
+      head :no_content
+    else
+      render json: { error: "Bird not found" }, status: :not_found
+    end
   end
+
 
 end
